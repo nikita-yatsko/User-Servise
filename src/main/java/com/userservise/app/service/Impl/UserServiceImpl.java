@@ -1,22 +1,23 @@
 package com.userservise.app.service.Impl;
 
-
 import com.userservise.app.mapper.UserMapper;
 import com.userservise.app.model.dto.UserDto;
 import com.userservise.app.model.entity.User;
 import com.userservise.app.model.enums.ActiveStatus;
 import com.userservise.app.repository.UserRepository;
 import com.userservise.app.service.UserService;
-import com.userservise.app.utils.UserSpecifications;
+import com.userservise.app.utils.specifications.UserSpecifications;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -33,12 +34,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDto getUserById(Integer id) {
-        User user = userRepository.findById(id).orElse(null);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         return userMapper.toDto(user);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<UserDto> getAllUsers(String firstName, String surname, Pageable pageable) {
         Specification<User> specification = UserSpecifications.hasFirstName(firstName)
                 .and(UserSpecifications.hasSurname(surname));
@@ -53,7 +57,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (userRepository.existsByEmail(request.getEmail()))
+        if (!request.getEmail().equals(user.getEmail()) && userRepository.existsByEmail(request.getEmail()))
             throw new RuntimeException("Email already exists");
 
         if (!checkCardsCount(user))
@@ -85,6 +89,13 @@ public class UserServiceImpl implements UserService {
         User updatedUser = userRepository.save(user);
 
         return updatedUser.getActive().equals(ActiveStatus.INACTIVE);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        if (!userRepository.existsById(id))
+            throw new RuntimeException("User not found");
+        userRepository.deleteById(id);
     }
 
     private Boolean checkCardsCount(User user) {

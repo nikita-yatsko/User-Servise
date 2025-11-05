@@ -4,6 +4,7 @@ import com.userservise.app.model.enums.ActiveStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class User extends BaseEntity {
     @Column(name = "active")
     private ActiveStatus active;
 
-    @OneToMany(mappedBy = "owner")
-    private List<Card> cards;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Card> cards = new ArrayList<>();
 }

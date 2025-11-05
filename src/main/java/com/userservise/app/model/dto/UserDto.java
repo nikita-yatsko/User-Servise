@@ -1,5 +1,6 @@
 package com.userservise.app.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.userservise.app.model.enums.ActiveStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -23,7 +24,7 @@ public class UserDto {
     private String surname;
 
     @Past(message = "Birth date must be in the past")
-    private Date birthDate;
+    private LocalDateTime birthDate;
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email cannot be empty")
@@ -35,7 +36,9 @@ public class UserDto {
     @NotNull(message = "Active status must be set")
     private ActiveStatus active;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime updatedAt;
 }

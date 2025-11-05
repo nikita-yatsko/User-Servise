@@ -17,4 +17,6 @@ public interface UserService {
     Boolean activateUser(Integer id);
 
     Boolean deactivateUser(Integer id);
+
+    void deleteById(Integer id);
 }

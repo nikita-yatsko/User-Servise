@@ -13,13 +13,13 @@ public interface UserMapper {
 
     UserDto toDto(User user);
 
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+//    @Mapping(target = "createdAt", ignore = true)
+//    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "cards", ignore = true)
     void updateUser(UserDto userDto, @MappingTarget User user);
 
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+//    @Mapping(target = "createdAt", ignore = true)
+//    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "cards", ignore = true)
     User toUser(UserDto userDto);
 

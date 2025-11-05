@@ -1,9 +1,11 @@
 package com.userservise.app.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.userservise.app.model.enums.ActiveStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.Date;
 
@@ -17,8 +19,10 @@ public class Card extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ToString.Exclude
+    //TODO add date formate YYYY-MM-DD
     private User owner;
 
     @Column(name = "number")
