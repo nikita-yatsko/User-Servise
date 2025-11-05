@@ -1,6 +1,7 @@
 package com.userservise.app.service.Impl;
 
 import com.userservise.app.mapper.UserMapper;
+import com.userservise.app.model.dto.UpdateUserDto;
 import com.userservise.app.model.dto.UserDto;
 import com.userservise.app.model.entity.User;
 import com.userservise.app.model.enums.ActiveStatus;
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Integer id, UserDto request) {
+    public UserDto updateUser(Integer id, UpdateUserDto request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

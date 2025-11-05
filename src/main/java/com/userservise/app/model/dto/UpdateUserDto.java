@@ -1,18 +1,15 @@
 package com.userservise.app.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.userservise.app.model.enums.ActiveStatus;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
-public class UserDto {
-
-    private Integer id;
+public class UpdateUserDto {
 
     @NotBlank(message = "Name can not be empty")
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
@@ -28,16 +25,4 @@ public class UserDto {
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email cannot be empty")
     private String email;
-
-    @Valid
-    private List<CardDto> cards;
-
-    @NotNull(message = "Active status must be set")
-    private ActiveStatus active;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime createdAt;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime updatedAt;
 }
