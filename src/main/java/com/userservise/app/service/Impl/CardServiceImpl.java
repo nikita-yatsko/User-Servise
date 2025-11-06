@@ -1,16 +1,21 @@
 package com.userservise.app.service.Impl;
 
 import com.userservise.app.mapper.CardMapper;
+import com.userservise.app.model.constants.ErrorMessage;
 import com.userservise.app.model.dto.CardDto;
 import com.userservise.app.model.entity.Card;
 import com.userservise.app.model.entity.User;
 import com.userservise.app.model.enums.ActiveStatus;
+import com.userservise.app.model.exception.DataExistException;
+import com.userservise.app.model.exception.InvalidDataException;
+import com.userservise.app.model.exception.NotFoundException;
 import com.userservise.app.repository.CardRepository;
 import com.userservise.app.repository.UserRepository;
 import com.userservise.app.service.CardService;
 import com.userservise.app.utils.CardNumberGenerator;
 import com.userservise.app.utils.specifications.CardSpecifications;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Slf4j //TODO logging
 public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
@@ -33,10 +39,10 @@ public class CardServiceImpl implements CardService {
     @Override
     public CardDto createCard(Integer userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(userId)));
 
         if (user.getCards().size() >= 5)
-            throw new RuntimeException("user can no longer have 5 cards");
+            throw new InvalidDataException(ErrorMessage.USER_CANNOT_HAVE_MORE_THAN_5_CARDS.getMessage(userId));
 
         Card card = cardRepository.save(generateCard(user));
 
@@ -47,7 +53,7 @@ public class CardServiceImpl implements CardService {
     @Transactional(readOnly = true)
     public CardDto getCardById(Integer id) {
         Card card = cardRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Card not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.CARD_NOT_FOUND_BY_ID.getMessage(id)));
 
         return cardMapper.toDto(card);
     }
@@ -75,10 +81,10 @@ public class CardServiceImpl implements CardService {
     @Override
     public CardDto updateCard(Integer id, CardDto requestUpdate) {
         Card card = cardRepository.findCardById(id)
-                .orElseThrow(() -> new RuntimeException("Card not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.CARD_NOT_FOUND_BY_ID.getMessage(id)));
 
         if (!requestUpdate.getNumber().equals(card.getNumber()) && cardRepository.existsCardByNumber(requestUpdate.getNumber()))
-            throw new RuntimeException("card number already exists");
+            throw new DataExistException(ErrorMessage.CARD_NUMBER_ALREADY_EXISTS.getMessage(requestUpdate.getNumber()));
 
         cardMapper.updateCard(requestUpdate, card);
         Card updatedCard = cardRepository.save(card);
@@ -89,7 +95,8 @@ public class CardServiceImpl implements CardService {
     @Override
     public Boolean activateCard(Integer id) {
         Card card = cardRepository.findCardById(id)
-                .orElseThrow(() -> new RuntimeException("Card not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.CARD_NOT_FOUND_BY_ID.getMessage(id)));
+
         card.setActive(ActiveStatus.ACTIVE);
         cardRepository.save(card);
 
@@ -99,7 +106,8 @@ public class CardServiceImpl implements CardService {
     @Override
     public Boolean deactivateCard(Integer id) {
         Card card = cardRepository.findCardById(id)
-                .orElseThrow(() -> new RuntimeException("Card not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.CARD_NOT_FOUND_BY_ID.getMessage(id)));
+
         card.setActive(ActiveStatus.INACTIVE);
         cardRepository.save(card);
 
@@ -109,7 +117,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public void deleteCard(Integer id) {
         if (!cardRepository.existsById(id))
-            throw new RuntimeException("Card not found");
+            throw new NotFoundException(ErrorMessage.CARD_NOT_FOUND_BY_ID.getMessage(id));
         cardRepository.deleteById(id);
     }
 
