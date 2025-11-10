@@ -132,7 +132,7 @@ public class UserServiceTest {
         when(userRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(response);
         when(userMapper.toDto(any(User.class))).thenReturn(userDto);
 
-        Page<UserDto> result = userService.getAllUsers("testname", "testSurname", pageable);
+        Page<UserDto> result = userService.getAllUsers("testName", "testSurname", pageable);
 
         assertNotNull(result);
         assertEquals(response.getTotalElements(), result.getTotalElements());

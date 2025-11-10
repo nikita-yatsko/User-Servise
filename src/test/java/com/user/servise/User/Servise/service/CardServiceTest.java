@@ -18,7 +18,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,7 +136,25 @@ public class CardServiceTest {
         assertEquals(ErrorMessage.CARD_NOT_FOUND_BY_ID.getMessage(1), result.getMessage());
     }
 
-    //TODO add getAllCards tests
+    @Test
+    public void getAllCards_Successful() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Card> response = new PageImpl<>(Collections.singletonList(card), pageable, 1L);
+
+        when(cardRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(response);
+        when(cardMapper.toDto(card)).thenReturn(cardDto);
+
+        Page<CardDto> result = cardService.getAllCards("test", pageable);
+
+        assertNotNull(result);
+        assertEquals(cardDto.getId(), result.getContent().getFirst().getId());
+        assertEquals(cardDto.getHolder(), result.getContent().getFirst().getHolder());
+        assertEquals(cardDto.getNumber(), result.getContent().getFirst().getNumber());
+
+        verify(cardRepository, times(1)).findAll(any(Specification.class), eq(pageable));
+        verify(cardMapper, times(1)).toDto(card);
+    }
+
 
     @Test
     public void getAllByUserId_Successful() {
