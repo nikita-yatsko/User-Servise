@@ -263,7 +263,7 @@ public class UserServiceTest {
     public void deactivateUser_UserNotFound_ThrowException() {
         when(userRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        NotFoundException result = assertThrows(NotFoundException.class, () -> userService.activateUser(1));
+        NotFoundException result = assertThrows(NotFoundException.class, () -> userService.deactivateUser(1));
 
         assertEquals(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(1), result.getMessage());
         verify(userRepository, times(1)).findById(anyInt());
