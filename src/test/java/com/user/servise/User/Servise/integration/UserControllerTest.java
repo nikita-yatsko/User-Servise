@@ -123,5 +123,42 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(request.getEmail()));
     }
 
-    //TODO add other tests
+    @Test
+    public void setActiveUser_200_Ok() throws Exception {
+        savedUser.setActive(ActiveStatus.INACTIVE);
+        userRepository.saveAndFlush(savedUser);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                    .put("/api/user/{id}/active", savedUser.getId())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        User updatedUser = userRepository.findById(savedUser.getId()).orElseThrow();
+        Assertions.assertEquals(ActiveStatus.ACTIVE, updatedUser.getActive());
+    }
+
+
+    @Test
+    public void setInactiveUser_200_Ok() throws Exception {
+        savedUser.setActive(ActiveStatus.ACTIVE);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/user/{id}/inactive", savedUser.getId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        User updatedUser = userRepository.findById(savedUser.getId()).orElseThrow();
+        Assertions.assertEquals(ActiveStatus.INACTIVE, updatedUser.getActive());
+    }
+
+    @Test
+    @Transactional
+    public void deleteUserById_200_Ok() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/user/{id}", savedUser.getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        boolean exists = userRepository.existsById(savedUser.getId());
+        Assertions.assertFalse(exists, "User should be deleted from database");
+    }
 }
