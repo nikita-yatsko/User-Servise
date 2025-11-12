@@ -1,10 +1,14 @@
 package com.userservise.app.service.Impl;
 
 import com.userservise.app.mapper.UserMapper;
+import com.userservise.app.model.constants.ErrorMessage;
 import com.userservise.app.model.dto.UpdateUserDto;
 import com.userservise.app.model.dto.UserDto;
 import com.userservise.app.model.entity.User;
 import com.userservise.app.model.enums.ActiveStatus;
+import com.userservise.app.model.exception.DataExistException;
+import com.userservise.app.model.exception.InvalidDataException;
+import com.userservise.app.model.exception.NotFoundException;
 import com.userservise.app.repository.UserRepository;
 import com.userservise.app.service.UserService;
 import com.userservise.app.utils.specifications.UserSpecifications;
@@ -27,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto request) {
         if (userRepository.existsByEmail(request.getEmail()))
-            throw new RuntimeException("Email already exists");
+            throw new DataExistException(ErrorMessage.EMAIL_ALREADY_EXISTS.getMessage(request.getEmail()));
 
         User user =  userRepository.save(userMapper.toUser(request));
 
@@ -38,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public UserDto getUserById(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(id)));
         return userMapper.toDto(user);
     }
 
@@ -56,13 +60,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(Integer id, UpdateUserDto request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(id)));
 
         if (!request.getEmail().equals(user.getEmail()) && userRepository.existsByEmail(request.getEmail()))
-            throw new RuntimeException("Email already exists");
+            throw new DataExistException(ErrorMessage.EMAIL_ALREADY_EXISTS.getMessage(request.getEmail()));
 
         if (!checkCardsCount(user))
-            throw new RuntimeException("Cards count exceeded");
+            throw new InvalidDataException(ErrorMessage.USER_CANNOT_HAVE_MORE_THAN_5_CARDS.getMessage(id));
 
         userMapper.updateUser(request, user);
         User updatedUser = userRepository.save(user);
@@ -73,7 +77,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean activateUser(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(id)));
 
         user.setActive(ActiveStatus.ACTIVE);
         User updatedUser = userRepository.save(user);
@@ -84,7 +88,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean deactivateUser(Integer id) {
         User user = userRepository.findUserById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(id)));
 
         user.setActive(ActiveStatus.INACTIVE);
         User updatedUser = userRepository.save(user);
@@ -95,7 +99,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(Integer id) {
         if (!userRepository.existsById(id))
-            throw new RuntimeException("User not found");
+            throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(id));
         userRepository.deleteById(id);
     }
 
