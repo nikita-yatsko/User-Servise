@@ -52,7 +52,6 @@ public class UserController {
     public ResponseEntity<UserDto> createUser(
             @RequestBody @Valid CreateUserRequest request) {
         log.info("Received request to create user: {}", request.getEmail());
-        System.out.println(request.getBirthDate());
         UserDto response = userService.createUser(request);
 
         log.debug("User was created: {}", request);
