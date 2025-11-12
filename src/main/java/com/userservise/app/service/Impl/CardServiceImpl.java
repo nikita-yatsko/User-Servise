@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
-@Slf4j
 public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
@@ -40,6 +38,7 @@ public class CardServiceImpl implements CardService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     @CachePut(value = "cards", key = "#result.id")
     public CardDto createCard(Integer userId) {
         User user = userRepository.findById(userId)
@@ -84,6 +83,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     @CachePut(value = "cards", key = "#id")
     public CardDto updateCard(Integer id, CardDto requestUpdate) {
         Card card = cardRepository.findCardById(id)
@@ -99,6 +99,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     @CacheEvict(value = "cards", key = "#id")
     public Boolean activateCard(Integer id) {
         Card card = cardRepository.findCardById(id)
@@ -111,6 +112,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     @CacheEvict(value = "cards", key = "#id")
     public Boolean deactivateCard(Integer id) {
         Card card = cardRepository.findCardById(id)
@@ -123,6 +125,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     @CacheEvict(value = "cards", key = "#id")
     public void deleteCard(Integer id) {
         if (!cardRepository.existsById(id))

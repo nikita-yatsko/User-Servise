@@ -123,5 +123,14 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(request.getEmail()));
     }
 
-    //TODO add other tests
+    @Test
+    @Transactional
+    public void setActiveUser_200_Ok() throws Exception {
+        savedUser.setActive(ActiveStatus.INACTIVE);
+
+//        mockMvc.perform(MockMvcRequestBuilders
+//                    .get("/api/user/" + savedUser.getId() + "/active"))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$active").value(ActiveStatus.ACTIVE));
+    }
 }

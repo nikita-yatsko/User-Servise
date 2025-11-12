@@ -81,7 +81,7 @@ public class CardServiceTest {
         assertEquals(cardDto.getId(), result.getId());
         assertEquals(cardDto.getHolder(), result.getHolder());
         assertEquals(cardDto.getNumber(), result.getNumber());
-        assertEquals(user.getCards().get(0).getNumber(), result.getNumber());
+        assertEquals(user.getCards().getFirst().getNumber(), result.getNumber());
 
         verify(userRepository, times(1)).findById(anyInt());
         verify(cardRepository, times(1)).save(any(Card.class));
