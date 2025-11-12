@@ -72,7 +72,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}/active")
+    @PutMapping("/{id}/active")
     public ResponseEntity<Void> setActiveUser(
             @PathVariable("id") Integer id
     ) {
@@ -87,7 +87,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}/inactive")
+    @PutMapping("/{id}/inactive")
     public ResponseEntity<Void> setInactiveUser(
             @PathVariable("id") Integer id
     ) {

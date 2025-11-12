@@ -73,7 +73,7 @@ public class CardController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PutMapping("/update/id")
+    @PutMapping("/update/{id}")
     public ResponseEntity<CardDto> updateCard(
             @PathVariable Integer id,
             @Valid @RequestBody CardDto cardDto
@@ -86,7 +86,7 @@ public class CardController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/{id}/active")
+    @PutMapping("/{id}/active")
     public ResponseEntity<Void> setActiveCard(
             @PathVariable Integer id
     ) {
@@ -101,7 +101,7 @@ public class CardController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}/inactive")
+    @PutMapping("/{id}/inactive")
     public ResponseEntity<Void> setInactiveCard(
             @PathVariable Integer id
     ) {
