@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -65,9 +64,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @CachePut(value = "users", key = "#id")
+    @Transactional
     public UserDto updateUser(Integer id, UpdateUserDto request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(id)));
 
         if (!request.getEmail().equals(user.getEmail()) && userRepository.existsByEmail(request.getEmail()))
             throw new DataExistException(ErrorMessage.EMAIL_ALREADY_EXISTS.getMessage(request.getEmail()));
@@ -83,6 +83,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @CacheEvict(value = "users", key = "#id")
+    @Transactional
     public Boolean activateUser(Integer id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(id)));
@@ -95,6 +96,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @CacheEvict(value = "users", key = "#id")
+    @Transactional
     public Boolean deactivateUser(Integer id) {
         User user = userRepository.findUserById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(id)));
@@ -107,6 +109,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @CacheEvict(value = "users", key = "#id")
+    @Transactional
     public void deleteById(Integer id) {
         if (!userRepository.existsById(id))
             throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(id));
