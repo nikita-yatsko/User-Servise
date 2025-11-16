@@ -1,6 +1,5 @@
 package com.userservise.app.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.userservise.app.model.enums.ActiveStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,7 +21,6 @@ public class Card extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
-    //TODO add date formate YYYY-MM-DD
     private User owner;
 
     @Column(name = "number")
