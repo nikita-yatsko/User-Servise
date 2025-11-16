@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +18,14 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/cards")
+@RequestMapping("/api/card")
 public class CardController {
 
     private final CardService cardService;
 
     @GetMapping("/{id}")
     public ResponseEntity<CardDto> getCardById(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         log.info("Received request to fetch card with ID: {}", id);
         CardDto card = cardService.getCardById(id);
 
@@ -39,8 +37,7 @@ public class CardController {
     public ResponseEntity<Page<CardDto>> getAllCards(
             @RequestParam(required = false) String holder,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit
-    ) {
+            @RequestParam(defaultValue = "10") int limit) {
         log.info("Received request to fetch all cards");
 
         Pageable pageable = PageRequest.of(page, limit);
@@ -50,22 +47,20 @@ public class CardController {
         return ResponseEntity.ok().body(cards);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<List<CardDto>> getCardByUserId(
-            @PathVariable("id") Integer userId
-    ){
+            @PathVariable("id") Integer userId){
         log.info("Received request to fetch card with UserId: {}", userId);
 
         List<CardDto> response = cardService.getAllByUserId(userId);
+        log.debug("Fetched cards data by userId: {}", response);
 
-        log.debug("Fetched card data: {}", response);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/create/{id}")
     public ResponseEntity<CardDto> createCard(
-            @PathVariable("id") Integer userId
-    ) {
+            @PathVariable("id") Integer userId) {
         log.info("Received request to create card for userId: {}", userId);
 
         CardDto response = cardService.createCard(userId);
@@ -77,8 +72,7 @@ public class CardController {
     @PutMapping("/update/{id}")
     public ResponseEntity<CardDto> updateCard(
             @PathVariable Integer id,
-            @Valid @RequestBody CardDto cardDto
-    ) {
+            @Valid @RequestBody CardDto cardDto) {
         log.info("Received request to update card with ID: {}", id);
 
         CardDto response = cardService.updateCard(id, cardDto);
@@ -89,8 +83,7 @@ public class CardController {
 
     @PutMapping("/{id}/active")
     public ResponseEntity<Void> setActiveCard(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         log.info("Received request to set active to card with ID: {}", id);
 
         if (!cardService.activateCard(id)) {
@@ -104,8 +97,7 @@ public class CardController {
 
     @PutMapping("/{id}/inactive")
     public ResponseEntity<Void> setInactiveCard(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         log.info("Received request to set inactive to card with ID: {}", id);
 
         if (!cardService.deactivateCard(id)) {
@@ -119,8 +111,7 @@ public class CardController {
 
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> deleteCard(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         log.info("Received request to delete card with ID: {}", id);
 
         cardService.deleteCard(id);

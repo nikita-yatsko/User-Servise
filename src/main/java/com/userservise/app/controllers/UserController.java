@@ -2,6 +2,7 @@ package com.userservise.app.controllers;
 
 import com.userservise.app.model.dto.UpdateUserDto;
 import com.userservise.app.model.dto.UserDto;
+import com.userservise.app.model.request.CreateUserRequest;
 import com.userservise.app.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,19 +19,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Validated
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(
-            @PathVariable Integer id)
-    {
+            @PathVariable Integer id) {
         log.info("Received request to fetch user with ID: {}", id);
         UserDto userDto = userService.getUserById(id);
-
         log.debug("Fetched user data: {}", userDto);
+
         return ResponseEntity.ok(userDto);
     }
 
@@ -39,8 +39,7 @@ public class UserController {
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String surname,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit)
-    {
+            @RequestParam(defaultValue = "10") int limit) {
         log.info("Received request to fetch all users");
         Pageable pageable = PageRequest.of(page, limit);
         Page<UserDto> response = userService.getAllUsers(firstName, surname, pageable);
@@ -51,20 +50,18 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<UserDto> createUser(
-            @RequestBody @Valid UserDto userDto)
-    {
-        log.info("Received request to create user: {}", userDto.getEmail());
-        UserDto response = userService.createUser(userDto);
+            @RequestBody @Valid CreateUserRequest request) {
+        log.info("Received request to create user: {}", request.getEmail());
+        UserDto response = userService.createUser(request);
 
-        log.debug("User was created: {}", userDto);
+        log.debug("User was created: {}", request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<UserDto> updateUserWithId(
             @PathVariable("id") Integer id,
-            @RequestBody @Valid UpdateUserDto updatedUser
-    ) {
+            @RequestBody @Valid UpdateUserDto updatedUser) {
         log.info("Received request to update user with ID: {}", id);
         UserDto response = userService.updateUser(id, updatedUser);
 
@@ -104,8 +101,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         log.info("Received request to delete user with ID: {}", id);
         userService.deleteById(id);
 
