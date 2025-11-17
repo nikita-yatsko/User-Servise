@@ -131,7 +131,7 @@ public class CardControllerTest extends BaseIntegrationTest{
                         .accept(MediaType.APPLICATION_JSON));
 
         // Then:
-        response.andExpect(MockMvcResultMatchers.status().isOk())
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.holder").value(holder));
     }
 

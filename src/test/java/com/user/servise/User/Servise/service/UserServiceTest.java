@@ -253,7 +253,7 @@ public class UserServiceTest {
         InvalidDataException result = assertThrows(InvalidDataException.class, () -> userService.updateUser(1, userRequest));
 
         // Assert:
-        assertEquals(ErrorMessage.USER_CANNOT_HAVE_MORE_THAN_5_CARDS.getMessage(userRequest.getEmail()), result.getMessage());
+        assertEquals(ErrorMessage.USER_CANNOT_HAVE_MORE_THAN_5_CARDS.getMessage(user.getId()), result.getMessage());
 
         // Verify:
         verify(userRepository, times(1)).findById(anyInt());
