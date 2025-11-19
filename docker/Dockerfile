@@ -1,12 +1,18 @@
+# Stage 1
+FROM maven:3.9-eclipse-temurin-21 AS builder
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Stage 2
 FROM eclipse-temurin:21-jre
-
 WORKDIR /srv
+COPY --from=builder /app/target/*.jar app.jar
 
-COPY target/*.jar .
-COPY docker/user-service.sh .
+EXPOSE 8081
 
-RUN chmod +x user-service.sh
+ENV SPRING_PROFILES_ACTIVE=docker
 
-EXPOSE 8189
-
-ENTRYPOINT ["./user-service.sh"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
