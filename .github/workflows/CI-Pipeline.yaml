@@ -3,10 +3,19 @@ name: User Service CI
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:27-dind
+        privileged: true
+        options: --dns 8.8.8.8
+
     steps:
       # Clone repository
       - name: Checkout code
@@ -25,7 +34,9 @@ jobs:
 
       # Run tests
       - name: Run tests
-        run: mvn test
+        env:
+          TESTCONTAINERS_RYUK_DISABLED: "true"
+        run: mvn -e test
 
       # Code analysis
       - name: Code analysis with SonarQube
@@ -41,7 +52,7 @@ jobs:
       - name: Build Docker image
         run: docker build -t user-service:latest .
 
-      # Login to Docker Hub (или GitHub Container Registry)
+      # Login to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
