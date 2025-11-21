@@ -13,7 +13,6 @@ jobs:
     services:
       docker:
         image: docker:27-dind
-        privileged: true
         options: --dns 8.8.8.8
 
     steps:
