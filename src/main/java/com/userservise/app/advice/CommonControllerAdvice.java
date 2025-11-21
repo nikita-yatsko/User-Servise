@@ -19,28 +19,28 @@ import java.time.LocalDateTime;
 public class CommonControllerAdvice {
 
     @ExceptionHandler(DataExistException.class)
-    public ResponseEntity<?> handleDataExistException(DataExistException e, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleDataExistException(DataExistException e, HttpServletRequest request) {
         log.error(e.getMessage());
 
         return buildErrorResponse(e, HttpStatus.CONFLICT, request);
     }
 
     @ExceptionHandler(InvalidDataException.class)
-    public ResponseEntity<?> handleInvalidDataException(InvalidDataException e, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleInvalidDataException(InvalidDataException e, HttpServletRequest request) {
         log.error(e.getMessage());
 
         return buildErrorResponse(e, HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<?> handleNotFoundException(NotFoundException e, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e, HttpServletRequest request) {
         log.error(e.getMessage());
 
         return buildErrorResponse(e, HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
         log.error(e.getMessage());
 
         return buildErrorResponse(e, HttpStatus.NOT_FOUND, request);
