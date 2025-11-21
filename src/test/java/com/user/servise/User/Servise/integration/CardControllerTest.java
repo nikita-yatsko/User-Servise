@@ -109,8 +109,8 @@ public class CardControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/card/user/" + user.getId())
-                        .accept(MediaType.APPLICATION_JSON));
+                .get("/api/card/user/" + user.getId())
+                .accept(MediaType.APPLICATION_JSON));
 
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isOk())
@@ -127,8 +127,8 @@ public class CardControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/card/create/" + user.getId())
-                        .accept(MediaType.APPLICATION_JSON));
+                .post("/api/card/create/" + user.getId())
+                .accept(MediaType.APPLICATION_JSON));
 
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isCreated())
@@ -148,10 +148,10 @@ public class CardControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/card/update/" + card.getId())
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto)));
+                .put("/api/card/update/" + card.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDto)));
 
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isOk())
@@ -167,8 +167,8 @@ public class CardControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                    .put("/api/card/{id}/active", card.getId())
-                    .accept(MediaType.APPLICATION_JSON));
+                .put("/api/card/{id}/active", card.getId())
+                .accept(MediaType.APPLICATION_JSON));
 
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isOk())
@@ -185,8 +185,8 @@ public class CardControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/card/{id}/inactive", card.getId())
-                        .accept(MediaType.APPLICATION_JSON));
+                .put("/api/card/{id}/inactive", card.getId())
+                .accept(MediaType.APPLICATION_JSON));
 
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isOk())
@@ -203,7 +203,7 @@ public class CardControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/card/{id}/delete", deleteCard.getId()));
+                .delete("/api/card/{id}/delete", deleteCard.getId()));
 
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isOk());

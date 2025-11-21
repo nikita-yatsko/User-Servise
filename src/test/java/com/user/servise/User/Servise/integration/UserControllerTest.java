@@ -56,8 +56,8 @@ public class UserControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                    .get("/api/user/" + user.getId())
-                    .accept(MediaType.APPLICATION_JSON));
+                .get("/api/user/" + user.getId())
+                .accept(MediaType.APPLICATION_JSON));
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -76,8 +76,8 @@ public class UserControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/user/" + id)
-                        .accept(MediaType.APPLICATION_JSON));
+                .get("/api/user/" + id)
+                .accept(MediaType.APPLICATION_JSON));
 
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -90,9 +90,9 @@ public class UserControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/user/all")
-                        .param("firstName", firstName)
-                        .accept(MediaType.APPLICATION_JSON));
+                .get("/api/user/all")
+                .param("firstName", firstName)
+                .accept(MediaType.APPLICATION_JSON));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
@@ -112,9 +112,9 @@ public class UserControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/user/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)));
+                .post("/api/user/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.getName()))
@@ -134,9 +134,9 @@ public class UserControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user/update/" + savedUser.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)));
+                .put("/api/user/update/" + savedUser.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
 
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isOk())
@@ -155,7 +155,7 @@ public class UserControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                    .put("/api/user/{id}/active", savedUser.getId())
+                .put("/api/user/{id}/active", savedUser.getId())
                 .accept(MediaType.APPLICATION_JSON));
 
         // Then:
@@ -175,8 +175,8 @@ public class UserControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user/{id}/inactive", savedUser.getId())
-                        .accept(MediaType.APPLICATION_JSON));
+                .put("/api/user/{id}/inactive", savedUser.getId())
+                .accept(MediaType.APPLICATION_JSON));
 
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isOk())
@@ -194,7 +194,7 @@ public class UserControllerTest extends BaseIntegrationTest{
 
         // When:
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/user/{id}", user.getId()));
+                .delete("/api/user/{id}", user.getId()));
 
         // Then:
         response.andExpect(MockMvcResultMatchers.status().isOk());
