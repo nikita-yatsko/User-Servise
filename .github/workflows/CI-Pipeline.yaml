@@ -10,11 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      docker:
-        image: docker:27-dind
-        options: --dns 8.8.8.8
-
     steps:
       # Clone repository
       - name: Checkout code
@@ -35,7 +30,7 @@ jobs:
       - name: Run tests
         env:
           TESTCONTAINERS_RYUK_DISABLED: "true"
-        run: mvn -e test
+        run: mvn test
 
       # Code analysis
       - name: Code analysis with SonarQube
