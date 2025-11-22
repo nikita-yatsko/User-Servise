@@ -13,6 +13,8 @@ jobs:
       # Clone repository
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       # Setup JDk
       - name: Set up JDK 21
@@ -21,23 +23,30 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # Build project
-      - name: Build project
-        run: mvn clean compile
-
-      # Run tests
-      - name: Run tests
-        run: mvn test
-
-      # Code analysis
-      - name: Code analysis with SonarQube
-        uses: sonarsource/sonarcloud-github-action@v1
+      # Cache Maven repo
+      - name: Cache Maven packages
+        uses: actions/cache@v3
         with:
-          projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
-          organization: ${{ secrets.SONAR_ORG }}
-          token: ${{ secrets.SONAR_TOKEN }}
+          path: ~/.m2
+          key: ${{ runner.os }}-m2
+          restore-keys: ${{ runner.os }}-m2
+
+      # Cache Sonar packages
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      # Build + test + sonar analysis
+      - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify sonar:sonar \
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+          -Dsonar.organization=${{ secrets.SONAR_ORG }} \
+          -Dsonar.host.url=https://sonarcloud.io
 
       # Build Docker image
       - name: Build Docker image
@@ -45,14 +54,14 @@ jobs:
 
       # Login to Docker Hub
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       # Push Docker image
       - name: Push Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/user-service:latest
