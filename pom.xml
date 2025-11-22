@@ -98,6 +98,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!--SonarQube-->
+		<dependency>
+			<groupId>org.sonarsource.api.plugin</groupId>
+			<artifactId>sonar-plugin-api</artifactId>
+			<version>13.4.0.3221</version>
+		</dependency>
+
 		<!--Migrations-->
 		<dependency>
 			<groupId>org.liquibase</groupId>
